@@ -1,9 +1,8 @@
 <?php
 # 首页入口
 
-echo "Hello World";
-
-
+$request_uri = $_SERVER['REQUEST_URI'];
+echo $request_uri;
 
 
 
