@@ -41,6 +41,7 @@ class fs
 			if($item == '.' || $item == '..' || $item === null) { continue; }
 			$tmp = preg_match('([^ a-zа-я-_0-9.]+)ui', $item);
 			if($tmp === false || $tmp === 1) { continue; }
+			if (substr($item, 0, 1) == '.') { continue; } // Added: By@simple.xull 过滤.开头的文件和目录 2015年10月30日
 			if(is_dir($dir . DIRECTORY_SEPARATOR . $item)) {
 				$res[] = array('text' => $item, 'children' => true,  'id' => $this->id($dir . DIRECTORY_SEPARATOR . $item), 'icon' => 'folder');
 			}
@@ -236,8 +237,8 @@ if(isset($_GET['operation'])) {
 		#data textarea { margin:0; padding:0; height:100%; width:100%; border:0; background:white; display:block; line-height:18px; resize:none; }
 		#data, #code { font: normal normal normal 12px/18px 'Consolas', monospace !important; }
 
-		#tree .folder { background:url('assets/images/jstreen/file_sprite.png') right bottom no-repeat; }
-		#tree .file { background:url('assets/images/jstreen/file_sprite.png') 0 0 no-repeat; }
+		#tree .folder { background:url('assets/images/jstree/file_sprite.png') right bottom no-repeat; }
+		#tree .file { background:url('assets/images/jstree/file_sprite.png') 0 0 no-repeat; }
 		#tree .file-pdf { background-position: -32px 0 }
 		#tree .file-as { background-position: -36px 0 }
 		#tree .file-c { background-position: -72px -0px }
@@ -286,7 +287,7 @@ if(isset($_GET['operation'])) {
 				.jstree({
 					'core' : {
 						'data' : {
-							'url' : 'index.php?operation=get_node',
+							'url' : 'tree.php?operation=get_node',
 							'data' : function (node) {
 								return { 'id' : node.id };
 							}
@@ -354,7 +355,7 @@ if(isset($_GET['operation'])) {
 						});
 				})
 				.on('create_node.jstree', function (e, data) {
-					$.get('index.php?operation=create_node', { 'type' : data.node.type, 'id' : data.node.parent, 'text' : data.node.text })
+					$.get('tree.php?operation=create_node', { 'type' : data.node.type, 'id' : data.node.parent, 'text' : data.node.text })
 						.done(function (d) {
 							data.instance.set_id(data.node, d.id);
 						})
@@ -363,7 +364,7 @@ if(isset($_GET['operation'])) {
 						});
 				})
 				.on('rename_node.jstree', function (e, data) {
-					$.get('index.php?operation=rename_node', { 'id' : data.node.id, 'text' : data.text })
+					$.get('tree.php?operation=rename_node', { 'id' : data.node.id, 'text' : data.text })
 						.done(function (d) {
 							data.instance.set_id(data.node, d.id);
 						})
@@ -372,7 +373,7 @@ if(isset($_GET['operation'])) {
 						});
 				})
 				.on('move_node.jstree', function (e, data) {
-					$.get('index.php?operation=move_node', { 'id' : data.node.id, 'parent' : data.parent })
+					$.get('tree.php?operation=move_node', { 'id' : data.node.id, 'parent' : data.parent })
 						.done(function (d) {
 							//data.instance.load_node(data.parent);
 							data.instance.refresh();
@@ -382,7 +383,7 @@ if(isset($_GET['operation'])) {
 						});
 				})
 				.on('copy_node.jstree', function (e, data) {
-					$.get('index.php?operation=copy_node', { 'id' : data.original.id, 'parent' : data.parent })
+					$.get('tree.php?operation=copy_node', { 'id' : data.original.id, 'parent' : data.parent })
 						.done(function (d) {
 							//data.instance.load_node(data.parent);
 							data.instance.refresh();
@@ -393,7 +394,7 @@ if(isset($_GET['operation'])) {
 				})
 				.on('changed.jstree', function (e, data) {
 					if(data && data.selected && data.selected.length) {
-						$.get('index.php?operation=get_content&id=' + data.selected.join(':'), function (d) {
+						$.get('tree.php?operation=get_content&id=' + data.selected.join(':'), function (d) {
 							if(d && typeof d.type !== 'undefined') {
 								$('#data .content').hide();
 								switch(d.type) {
