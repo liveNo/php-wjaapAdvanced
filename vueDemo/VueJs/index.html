@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="./assets/vue.js"></script>
+    <title>Title</title>
+</head>
+<body>
+    <div id="app">
+        <p>{{ message.split('').reverse().join('') }}</p>
+        <input v-model="message" />
+
+
+        <ul>
+            <li v-for="todo in todos">
+                {{ todo.text }}
+            </li>
+        </ul>
+
+
+    </div>
+
+    <ul id="example-2">
+        <li v-for="item in items">
+            {{ title }} - {{ $index + 1 }} - {{ item.message }}
+        </li>
+    </ul>
+</body>
+<script type="text/javascript">
+    new Vue({
+        el:'#app',
+        data: {
+            message: 'Hello World!',
+            todos: [
+                {text: "1. 第一条"},
+                {text: "2. 第二条"},
+                {text: "3. 第三条"}
+            ]
+        }
+    })
+
+    new Vue({
+        el: '#example-2',
+        data: {
+            title: '初学Vue',
+            items: [
+                {message: '第一章'},
+                {message: '第二章'},
+                {message: '第三章'}
+            ]
+        }
+    })
+</script>
+</html>
